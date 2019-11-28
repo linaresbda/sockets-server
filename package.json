@@ -1,0 +1,26 @@
+{
+  "name": "sockets-server-nodejs",
+  "version": "1.0.0",
+  "description": "POC sockets - server - nodejs",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/linaresbda/sockets-server.git"
+  },
+  "keywords": [
+    "sockets",
+    "socket.io",
+    "nodejs",
+    "javascript"
+  ],
+  "author": "dlinares",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/linaresbda/sockets-server/issues"
+  },
+  "homepage": "https://github.com/linaresbda/sockets-server#readme"
+}
