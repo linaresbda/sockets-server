@@ -23,27 +23,28 @@ const io = socketio(server);
 
 // Evento de conexión,
 io.on('connect', (socket) => {
-  if (!socket.handshake.query.user || socket.handshake.query.user !== 'diego') {
+  let user = socket.handshake.query.user;
+  if (!user) {
     console.log(`Connection refused: ${socket.id}`);
     socket.disconnect(true);
   } else {
     console.log(`Connection ok: ${socket.id}`);
-    assignEvents(socket);
+    assignEvents(socket, user);
   }
 })
 
 // Asigna eventos al socket
-const assignEvents = (socket) => {
+const assignEvents = (socket, user) => {
   socket.on('request', (data) => {
-    eventResponseOneToAll(data);
+    eventResponseOneToAll(data, user);
     // eventResponseOneToOne(data);
   });
 }
 
 // Respuestas
-const eventResponseOneToAll = (data) => {
-  io.sockets.emit('response', `Response: ${data.message}`); // Emmit a todos los sockets
+const eventResponseOneToAll = (data, user) => {
+  io.sockets.emit('response', `${user}: ${data.message}`); // Emmit a todos los sockets
 };
-const eventResponseOneToOne = (data) => {
-  io.to(data.id).emit('response', `Response: ${data.message}`); // Emmit a Socket especifico
+const eventResponseOneToOne = (data, user) => {
+  io.to(data.id).emit('response', `1to1 - ${user}: ${data.message}`); // Emmit a Socket especifico
 };
