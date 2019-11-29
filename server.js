@@ -6,6 +6,7 @@
 const express = require('express');
 const socketio = require('socket.io');
 const { getSocketByUser, pushSocket } = require('./Singleton');
+
 // Vars
 const port = 80;
 
@@ -47,15 +48,19 @@ const assignEvents = (socket, user) => {
 }
 
 // Respuestas
+
+// Emmit a todos los sockets activos
 const eventResponseOneToAll = (data, user) => {
-  io.sockets.emit('response', `${user}: ${data.message}`); // Emmit a todos los sockets
+  io.sockets.emit('response', `${user}: ${data.message}`); 
 };
+
+// Emmit a Socket destino
 const eventResponseOneToOne = (data, user, recipient) => {
   let idSockerRecipient = getSocketByUser(recipient);
   if (idSockerRecipient) {
-    io.to(idSockerRecipient.id).emit('response', `1to1 - ${user}: ${data.message}`); // Emmit a Socket especifico
+    io.to(idSockerRecipient.id).emit('response', `1to1 - ${user}: ${data.message}`); 
   } else {
     let idSockerUser = getSocketByUser(user);
-    io.to(idSockerUser.id).emit('response', 'User is not available'); // Emmit a Socket de origine con error
+    io.to(idSockerUser.id).emit('response', 'User is not available'); // Emmit a Socket de origen con error
   }
 };

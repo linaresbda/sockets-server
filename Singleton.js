@@ -30,12 +30,7 @@ class Sockets {
   }
 }
 
-
-const getSockets = () => {
-  var sockets = new SingletonSockets().getInstance();
-  return sockets;
-}
-
+// Obtiene el socket del usuario solicitado
 const getSocketByUser = (user) => {
   var sockets = new SingletonSockets().getInstance();
   let socket = _.find(sockets.List, ele => { return ele.user == user });
