@@ -21,7 +21,7 @@ const server = app.listen(app.get('port'), () => {
 // Inicia Sockets
 const io = socketio(server);
 
-// Evento de conección,
+// Evento de conexión,
 io.on('connect', (socket) => {
   console.log("new connection socketId:", socket.id);
   assignEvents(socket);
