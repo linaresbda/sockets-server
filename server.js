@@ -5,7 +5,7 @@
 // Requerimientos
 const express = require('express');
 const socketio = require('socket.io');
-
+const { getSocketByUser, pushSocket } = require('./Singleton');
 // Vars
 const port = 80;
 
@@ -28,7 +28,8 @@ io.on('connect', (socket) => {
     console.log(`Connection refused: ${socket.id}`);
     socket.disconnect(true);
   } else {
-    console.log(`Connection ok: ${socket.id}`);
+    console.log(`Connection ok: ${socket.id} ${user}`);
+    pushSocket({ id: socket.id, user });
     assignEvents(socket, user);
   }
 })
@@ -36,8 +37,12 @@ io.on('connect', (socket) => {
 // Asigna eventos al socket
 const assignEvents = (socket, user) => {
   socket.on('request', (data) => {
-    eventResponseOneToAll(data, user);
-    // eventResponseOneToOne(data);
+    let recipient = data.recipient;
+    if (!recipient || recipient == '') {
+      eventResponseOneToAll(data, user);
+    } else {
+      eventResponseOneToOne(data, user, recipient);
+    }
   });
 }
 
@@ -45,6 +50,12 @@ const assignEvents = (socket, user) => {
 const eventResponseOneToAll = (data, user) => {
   io.sockets.emit('response', `${user}: ${data.message}`); // Emmit a todos los sockets
 };
-const eventResponseOneToOne = (data, user) => {
-  io.to(data.id).emit('response', `1to1 - ${user}: ${data.message}`); // Emmit a Socket especifico
+const eventResponseOneToOne = (data, user, recipient) => {
+  let idSockerRecipient = getSocketByUser(recipient);
+  if (idSockerRecipient) {
+    io.to(idSockerRecipient.id).emit('response', `1to1 - ${user}: ${data.message}`); // Emmit a Socket especifico
+  } else {
+    let idSockerUser = getSocketByUser(user);
+    io.to(idSockerUser.id).emit('response', 'User is not available'); // Emmit a Socket de origine con error
+  }
 };
