@@ -23,15 +23,20 @@ const io = socketio(server);
 
 // Evento de conexión,
 io.on('connect', (socket) => {
-  console.log("new connection socketId:", socket.id);
-  assignEvents(socket);
+  if (!socket.handshake.query.user || socket.handshake.query.user !== 'diego') {
+    console.log(`Connection refused: ${socket.id}`);
+    socket.disconnect(true);
+  } else {
+    console.log(`Connection ok: ${socket.id}`);
+    assignEvents(socket);
+  }
 })
 
 // Asigna eventos al socket
 const assignEvents = (socket) => {
   socket.on('request', (data) => {
     eventResponseOneToAll(data);
-    eventResponseOneToOne(data);
+    // eventResponseOneToOne(data);
   });
 }
 
